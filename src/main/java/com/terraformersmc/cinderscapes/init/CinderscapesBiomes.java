@@ -1,6 +1,5 @@
 package com.terraformersmc.cinderscapes.init;
 
-import com.terraformersmc.cinderscapes.biome.*;
 import com.terraformersmc.cinderscapes.Cinderscapes;
 import net.fabricmc.fabric.api.biomes.v1.NetherBiomes;
 import net.minecraft.util.Identifier;
@@ -11,43 +10,44 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * [REVIEWED]
+ * The main initializer class for Cinderscapes' biomes
  *
- * Contains the biomes added by Cinderscapes
- *
- * @author Will Toll
+ * @see CinderscapesBiomes#onInitialize()
  */
 public class CinderscapesBiomes {
 
-    // Acts as a kind of local registry for Cinderscape's custom biomes
+    /**
+     * A private map that acts as an internal registry for all of Cinderscapes' biomes.
+     */
     private static final Map<Identifier, Biome> BIOMES = new HashMap<>();
 
     public static final Biome BLACKSTONE_SHALES = add("blackstone_shales", new BlackstoneShalesBiome());
-    public static final Biome QUARTZ_CANYON = add("quartz_canyon", new QuartzCanyonBiome());
-    public static final Biome LUMINOUS_GROVE = add("luminous_grove", new LuminousGroveBiome());
-    public static final Biome ASHY_SHOALS = add("ashy_shoals", new AshyShoalsBiome());
 
     /**
-     * Adds a biome to Cinderscapes local biome registry
-     * @param s   A string representing the path of the biome under the cinderscapes namespace
-     * @param b   The biome to be added to the local registry
-     * @param <B> The class type of the biome
-     * @return The biome that was registered with the local biome registry
+     * Initializes all of the Cinderscapes' biomes.
+     *
+     * All biomes added to the local registry are reasonably assumed to be nether biomes
+     *
+     * @see Cinderscapes#onInitialize()
      */
-    private static <B extends Biome> B add(String s, B b) {
-        BIOMES.put(Cinderscapes.id(s), b);
-        return b;
+    public static void onInitialize() {
+        BIOMES.forEach((id, biome) -> {
+            Registry.register(Registry.BIOME, id, biome);
+            NetherBiomes.addNetherBiome(biome);
+        });
     }
 
     /**
-     * Initializes the biomes added by Cinderscapes
+     * Adds the given biome to the local registry.
+     *
+     * The biome is registered under the Cinderscapes namespace.
+     * @param s The path of the identifier the biome is added to the registry under.
+     * @param biome The biome that is added to the registry.
+     * @param <B> The specific type of the biome that is given, must extend net.minecraft.world.biome.Biome.
+     * @return Returns the biome that was added to the local registry.
      */
-    @SuppressWarnings("deprecation")
-    public static void init() {
-        // Registers all of the biomes within Cinderscapes local biome registry with the greater biome registry and the nether biome registry
-        BIOMES.forEach((id, b) -> {
-            Registry.register(Registry.BIOME, id, b);
-            NetherBiomes.addNetherBiome(b);
-        });
+    private static <B extends Biome> B add(String s, B biome) {
+        BIOMES.put(Cinderscapes.id(s), biome);
+        return biome;
     }
 }

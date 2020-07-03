@@ -1,51 +1,38 @@
 package com.terraformersmc.cinderscapes;
 
-import com.terraformersmc.cinderscapes.command.ShapeCommand;
-import com.terraformersmc.cinderscapes.init.*;
-import com.terraformersmc.cinderscapes.command.MapBiomesCommand;
-import com.terraformersmc.cinderscapes.util.NoiseCollisionChecker;
+import com.terraformersmc.cinderscapes.init.CinderscapesBiomes;
+import com.terraformersmc.cinderscapes.init.CinderscapesBlocks;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
- * [REVIEWED]
- *
- * @author <Wtoll> Will Toll on 2020-05-02
- * @project Cinderscapes
+ * This is the root class of the mod that is loaded by fabric at run time.
+ * @see Cinderscapes#onInitialize()
  */
+@SuppressWarnings("unused")
 public class Cinderscapes implements ModInitializer {
 
-    public static final String MOD_ID = "cinderscapes";
-    public static final Logger LOGGER = LogManager.getLogger(StringUtils.capitalize(MOD_ID));
+    /**
+     * A static string representing the namespace of all content in the mod
+     */
+    public static final String MODID = "cinderscapes";
 
     /**
-     * Initializes the custom content in the mod
+     * The main initialization method used as an entry point for fabric.
      */
     @Override
     public void onInitialize() {
-        CinderscapesItems.init();
-        CinderscapesBlocks.init();
-        CinderscapesTags.init();
-        CinderscapesDecorators.init();
-        CinderscapesFeatures.init();
-        CinderscapesSurfaces.init();
-        CinderscapesBiomes.init();
-        CinderscapesGroups.init();
-
-        MapBiomesCommand.register();
-        ShapeCommand.register();
-        NoiseCollisionChecker.init();
+        CinderscapesBlocks.onInitialize();
+        CinderscapesBiomes.onInitialize();
     }
 
     /**
-     * Creates an identifier value using the Cinderscapes namespace
-     * @param s The string representing the path of the identifier within the Cinderscapes namespace
-     * @return An identifier with namespace equal to the Cinderscapes mod id and path equal to s
+     * Creates an identifier within the mod's namespace.
+     * @param s The path for the identifier.
+     * @return An identifier with the mod's namespace and the given path.
+     * @see Cinderscapes#MODID
      */
     public static Identifier id(String s) {
-        return new Identifier(MOD_ID, s);
+        return new Identifier(MODID, s);
     }
 }
